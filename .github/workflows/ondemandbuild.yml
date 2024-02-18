@@ -1,0 +1,25 @@
+name: On Demand Build
+
+on:
+    workflow_dispatch:
+      inputs:
+        branch-name:  # id of input
+          type: string
+          description: 'Name of the repository branch. Ex: feature/PROJECT-12345_Title-Of-Ticket'
+          required: true
+          default: main
+
+concurrency:
+    group: ${{ github.workflow }}-${{ inputs.branch-name }}
+    cancel-in-progress: true
+    
+jobs:
+
+    publish:
+        uses: srinivas-kujala/.github/workflows/publish-sdk.yml@main
+        with:
+          branch-name: ${{ inputs.branch-name }}
+          project-path: ${{ vars.PROJECT_PATH }}
+        secrets:
+          jfrog-password: ${{ secrets.JFROG_PASSWORD }}
+          jfrog-access-token: ${{ secrets.JFROG_TOKEN }}

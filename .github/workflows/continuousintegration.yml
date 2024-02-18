@@ -1,0 +1,32 @@
+name: Continuous Integration
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+    
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref }}
+    cancel-in-progress: true
+        
+jobs:
+
+    validate:
+        uses: srinivas-kujala/.github/workflows/jira-validations.yml@main
+        with:
+            target-branch-name: ${{ github.base_ref }}
+            branch-name: ${{ github.head_ref }}
+            pr-state: ${{ github.event.pull_request.state }}
+            pr-merged: ${{ github.event.pull_request.merged }}
+            components: ${{ vars.COMPONENTS }}           
+        secrets:
+            password: ${{ secrets.JIRA_PASSWORD }}
+            
+    compile:
+        needs: validate
+        uses: srinivas-kujala/.github/workflows/compile-projects.yml@main
+        with:
+            branch-name: ${{ github.head_ref }}
+            project-path:  ${{ vars.PROJECT_PATH }}
+            nuget-path:  'src/NuGet.config'
+        secrets:
+            jfrog-password: ${{ secrets.JFROG_PASSWORD }}
