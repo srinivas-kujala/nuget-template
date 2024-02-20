@@ -4,7 +4,7 @@
 
 ## Jira ticket info
 
-Tickets: [PROJECT-](https://jira.ncr.com/browse/PROJECT-)
+Tickets: [PROJECT-](https://jira.com/browse/PROJECT-)
 
 ## Missed anything?
 
